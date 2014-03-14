@@ -23,14 +23,14 @@ def mpsk_mod(syms, m, differential = False, phase_offset = 0, symbol_mapping = '
 
 
 	def check_mapping(mp):
-		return (max(mp) < m) and (min(mp) > 0) and (len(np.unique(mp)) == len(mp))
+		return (max(mp) < m) and (min(mp) > 0) and (len(np.unique(mp)) == m)
 
 	if symbol_mapping == 'binary':
 		mapping = np.arange(m)
 	elif check_mapping(symbol_mapping):
 		mapping = symbol_mapping
 	else:
-		raise Exception("Badly formatted symbol mapping")
+		raise ValueError("Badly formatted symbol mapping")
 
 	rotations_rads = 2 * np.pi * np.arange(m) / m
 	points = np.exp(1j * rotations_rads + phase_offset)
@@ -40,7 +40,7 @@ def mpsk_mod(syms, m, differential = False, phase_offset = 0, symbol_mapping = '
 		yield last_point
 	for s in syms:
 		if s > m-1 or s < 0:
-			raise Exception("Symbol " + s + " out of range [0,m-1]")
+			raise IndexError("Symbol " + str(s) + " out of range [0,m-1]")
 
 		if differential:
 			last_point = last_point * np.exp(1j * rotations_rads[mapping[s]])
@@ -65,14 +65,14 @@ def dpsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 	return mpsk_mod(syms, m, True, phase_offset, symbol_mapping)
 
 def opsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
-	raise Exception("Not yet implemented")
+	raise NotImplementedError
 
 """
 Frequency Shift Keying
 """
 
 def fsk_mod():
-	raise Exception("Not yet implemented")
+	raise NotImplementedError
 
 def discontinuous_bfsk_modulate(bits, h, samplesperbit):
 	#these are in fractions of fs, not in Hz.
@@ -95,5 +95,5 @@ Amplitude Shift Keying
 """
 
 def qam_mod():
-	raise Exception("Not yet implemented")
+	raise NotImplementedError
 
