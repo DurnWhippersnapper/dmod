@@ -1,0 +1,9 @@
+Add unit tests for psk
+
+Add docstrings for qpsk and bpsk
+
+Move dpsk into psk and make differential an argument?
+
+More descriptive function names (e.g. differential_qpsk instead of dqpsk)?
+
+Check psk code to see if any symbols are greater than m
