@@ -1,5 +1,7 @@
 Add unit tests for psk
 
+Make functions take and return generators
+
 Add docstrings for qpsk and bpsk
 
 Move dpsk into psk and make differential an argument?

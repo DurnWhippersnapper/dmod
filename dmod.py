@@ -8,13 +8,13 @@ def mpsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 	Modulates the symbols in an m-ary phase shift keying.
 
 	Arguments
-	syms -- a list of symbols that are in the range [0,m-1]
+	syms -- an iterator of symbols that are in the range [0,m-1]
 	m -- the number of constellation points
 	phase_offset -- the offset, in radians, of the first symbol
 	symbol_mapping -- The mapping of symbol to constellation place. The default is binary, but a user supplied list of length m can be used to define a custom mapping, where symbol_mapping[i] == j indicates symbol i is mapped to the jth constellation point
 	
 	Outputs
-	An numpy array of complex points, one for each input symbol. 
+	A generator of complex points, one for each input symbol. 
 	"""
 
 
@@ -27,7 +27,12 @@ def mpsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 
 	points = np.exp(1j * 2 * np.pi * np.arange(m) / m + phase_offset)
 
-	return np.array([points[mapping[s]] for s in syms])
+	for s in syms:
+		if s > m-1 or s < 0:
+			raise Exception("Symbol " + s + " out of range [0,m-1]")
+		yield points[mapping[s]]
+
+	#return np.array([points[mapping[s]] for s in syms])
 
 def qpsk_mod(syms, phase_offset=0, symbol_mapping = 'binary'):
 	"""
@@ -47,7 +52,7 @@ def dpsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 	Modulates the symbols in an m-ary differential phase shift keying.
 
 	Arguments
-	syms -- a list of symbols that are in the range [0,m-1]
+	syms -- an iterator of symbols that are in the range [0,m-1]
 	m -- the number of constellation points
 	phase_offset -- the offset, in radians, of the first symbol
 	symbol_mapping -- The mapping of symbol to constellation place. The default is binary, but a user supplied list of length m can be used to define a custom mapping, where symbol_mapping[i] == j indicates symbol i is mapped to the jth phase difference
@@ -63,12 +68,13 @@ def dpsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 		raise Exception("Badly formatted symbol mapping")
 
 	rotations_rads = 2 * np.pi * np.arange(m) / m
-	points = np.zeros(len(syms) + 1, dtype = np.complex)
-	points[0] = np.exp(1j * 2 * np.pi * phase_offset)
-	for i,s in enumerate(syms):
-		points[i + 1] = points[i] * np.exp(1j * rotations_rads[s])
-
-	return points
+	last_point = np.complex(1,0)
+	yield last_point
+	for s in syms:
+		if s > m-1 or s < 0:
+			raise Exception("Symbol " + s + " out of range [0,m-1]")
+		last_point = last_point * np.exp(1j * rotations_rads[s])
+		yield last_point
 
 def opsk_mod(syms, m, phase_offset = 0, symbol_mapping = 'binary'):
 	raise Exception("Not yet implemented")
