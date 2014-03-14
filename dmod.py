@@ -78,3 +78,19 @@ def fsk_mod():
 
 def qam_mod():
 	raise Exception("Not yet implemented")
+
+def discontinuous_bfsk_modulate(bits, h, samplesperbit):
+	#these are in fractions of fs, not in Hz.
+	#it's a bit weird, but it allows us to be agnostic to
+	#the actual sampling frequency
+	fh = (h / 2.0) / samplesperbit
+	fl = -(h / 2.0) / samplesperbit
+
+	t = np.arange(len(bits) * samplesperbit)
+	sl = np.exp(1j * 2 * np.pi * fl * t)
+	sh = np.exp(1j * 2 * np.pi * fh * t)
+
+	bits = [1 if a > 0 else 0 for a in bits]
+	bits = np.repeat(bits,samplesperbit)
+	notbits = [0 if a else 1 for a in bits]
+	return sh * bits + sl * notbits
