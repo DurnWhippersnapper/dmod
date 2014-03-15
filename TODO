@@ -1,11 +1,3 @@
-Add unit tests for psk
-
-Make functions take and return generators
-
-Add docstrings for qpsk and bpsk
-
-Move dpsk into psk and make differential an argument?
+Add unit tests for fsk
 
 More descriptive function names (e.g. differential_qpsk instead of dqpsk)?
-
-Check psk code to see if any symbols are greater than m
